@@ -1,4 +1,4 @@
-# 🇮🇪 Asylum Seekers Assistant
+# Asylum Seekers Assistant
 
 An AI-powered assistant that helps asylum seekers understand the Dublin Regulation using Retrieval-Augmented Generation (RAG).
 
