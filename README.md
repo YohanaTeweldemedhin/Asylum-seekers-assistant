@@ -1,23 +1,18 @@
 # Asylum Seekers Assistant
 
-An AI-powered assistant that helps asylum seekers understand the Dublin Regulation using Retrieval-Augmented Generation (RAG).
+> An AI-powered Retrieval-Augmented Generation (RAG) application that helps asylum seekers understand the **Dublin Regulation** by answering questions using official documentation.
 
-The application retrieves information from official Dublin Regulation documents and generates simple, clear answers using a Large Language Model (LLM), while providing the source pages used to answer each question.
+**Status:** ✅ Complete
 
 ---
 
-## Overview
+# Overview
 
-Understanding asylum procedures can be difficult due to complex legal language and regulations.
+Understanding asylum procedures can be difficult because legal documents are often lengthy and written in complex language.
 
-**Asylum Seekers Assistant** uses Artificial Intelligence and document retrieval techniques to help users find relevant information from official asylum-related documents.
+The **Asylum Seekers Assistant** uses Artificial Intelligence and Retrieval-Augmented Generation (RAG) to provide clear, simple answers based only on official Dublin Regulation documents.
 
-The system is designed to:
-
-- Answer questions about the Dublin Regulation
-- Use only information from the provided documents
-- Provide transparent sources for generated answers
-- Explain information using simple English
+Instead of relying solely on a language model, the application first searches a vector database for the most relevant document sections before generating an answer. This improves accuracy and reduces hallucinations.
 
 ---
 
@@ -25,40 +20,38 @@ The system is designed to:
 
 ## 🤖 AI Question Answering
 
-Users can ask questions about asylum procedures and receive answers generated using OpenAI's GPT model.
+Ask natural language questions about the Dublin Regulation and receive easy-to-understand answers.
 
 Example questions:
 
-- "How long does the Dublin process take?"
-- "Can I be transferred to another country?"
-- "Which country is responsible for my asylum application?"
+- What is the Dublin Regulation?
+- Which country is responsible for my asylum application?
+- How long does the Dublin transfer process take?
+- Can I appeal a transfer decision?
 
 ---
 
 ## 📚 Retrieval-Augmented Generation (RAG)
 
-The application does not rely only on the language model.
+The application follows the RAG workflow:
 
-Instead, it:
-
-1. Searches relevant document sections.
-2. Retrieves the most relevant information.
-3. Provides this context to the AI model.
-4. Generates an answer based only on the retrieved documents.
-
-This reduces hallucination and keeps answers grounded in official information.
+1. User asks a question.
+2. The question is converted into embeddings.
+3. ChromaDB retrieves the most relevant document chunks.
+4. The retrieved context is sent to OpenAI GPT-4.1-mini.
+5. The model generates an answer using only the retrieved context.
 
 ---
 
-## 🔎 Source References
+## 🔍 Source References
 
-Each answer includes the document pages used to generate the response.
+Every generated answer includes the pages used from the official documents.
 
 Example:
 
 ```
 Answer:
-The transfer process usually takes up to 6 months.
+The transfer procedure generally takes up to six months.
 
 Sources:
 Page 9
@@ -67,37 +60,42 @@ Page 11
 
 ---
 
-# Architecture
+## 🐳 Docker Containerization
+
+The application is fully containerized using **Docker** and **Docker Compose**, allowing it to run consistently across different environments without requiring a local Python installation.
+
+---
+
+# System Architecture
 
 ```
                  User
-                  |
-                  |
-                  v
-          Streamlit Interface
-                  |
-                  |
-                  v
+                  │
+                  │
+                  ▼
+         Streamlit Web Interface
+                  │
+                  ▼
             User Question
-                  |
-                  |
-                  v
-          Semantic Search
-                  |
-                  |
-                  v
+                  │
+                  ▼
+      Hugging Face Embeddings
+                  │
+                  ▼
              ChromaDB
-                  |
-                  |
-        Relevant Document Chunks
-                  |
-                  |
-                  v
-          GPT-4.1-mini LLM
-                  |
-                  |
-                  v
-              Final Answer
+       (Vector Similarity Search)
+                  │
+                  ▼
+      Relevant Document Chunks
+                  │
+                  ▼
+          OpenAI GPT-4.1-mini
+                  │
+                  ▼
+          Generated Response
+                  │
+                  ▼
+       Answer + Source Pages
 ```
 
 ---
@@ -105,17 +103,18 @@ Page 11
 # Technology Stack
 
 | Category | Technology |
-|---|---|
+|----------|------------|
 | Programming Language | Python 3.13 |
-| Frontend | Streamlit |
+| User Interface | Streamlit |
 | AI Framework | LangChain |
 | Large Language Model | OpenAI GPT-4.1-mini |
-| Vector Database | ChromaDB |
-| Embeddings | BAAI/bge-small-en-v1.5 |
+| Embedding Model | BAAI/bge-small-en-v1.5 |
 | Embedding Framework | Hugging Face Sentence Transformers |
+| Vector Database | ChromaDB |
 | Document Processing | PyPDF |
-| Environment Management | Python dotenv |
+| Environment Variables | python-dotenv |
 | Containerization | Docker |
+| Container Orchestration | Docker Compose |
 
 ---
 
@@ -123,35 +122,29 @@ Page 11
 
 ```
 Asylum-seekers-assistant/
-
 │
-├── app.py                  # Streamlit user interface
-│
-├── rag.py                  # Retrieval-Augmented Generation pipeline
-│
-├── requirements.txt        # Python dependencies
-│
-├── Dockerfile              # Docker image configuration
-│
-├── docker-compose.yml      # Container orchestration
-│
+├── app.py
+├── rag.py
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
 ├── .dockerignore
+├── .gitignore
+├── README.md
+├── .env.example
 │
-├── .env                    # Environment variables
+├── chroma_db/
 │
 ├── data/
-│   └── documents           # Source documents
 │
-├── chroma_db/              # Vector database
-│
-└── README.md
+└── .venv/
 ```
 
 ---
 
 # Installation (Local Development)
 
-## Clone repository
+## Clone the repository
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/Asylum-seekers-assistant.git
@@ -161,15 +154,15 @@ cd Asylum-seekers-assistant
 
 ---
 
-## Create virtual environment
+## Create a virtual environment
 
-Windows:
+Windows
 
 ```powershell
 python -m venv .venv
 ```
 
-Activate:
+Activate
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
@@ -190,18 +183,18 @@ python -m pip install -r requirements.txt
 Create a `.env` file:
 
 ```
-OPENAI_API_KEY=your_api_key_here
+OPENAI_API_KEY=your_openai_api_key
 ```
 
 ---
 
-## Run application
+## Run the application
 
 ```powershell
 python -m streamlit run app.py
 ```
 
-Application available at:
+Open your browser:
 
 ```
 http://localhost:8501
@@ -211,124 +204,162 @@ http://localhost:8501
 
 # Docker Deployment
 
-## Build Docker image
+This application can also be run entirely inside a Docker container.
+
+## Build the Docker image
 
 ```bash
 docker compose build
 ```
 
-## Start application
+---
+
+## Start the application
 
 ```bash
 docker compose up
 ```
 
-Application available at:
+Open your browser:
 
 ```
 http://localhost:8501
 ```
 
-Docker provides:
+---
 
-- Isolated Python environment
-- Reproducible dependencies
-- Consistent deployment across machines
+## Stop the application
+
+```bash
+docker compose down
+```
 
 ---
 
-# How It Works
+# How the Application Works
 
 ## 1. Document Processing
 
-The source documents are loaded and processed.
+The official Dublin Regulation documents are:
 
-Documents are:
-
-- Extracted from PDF files
+- Loaded from PDF files
 - Split into smaller chunks
-- Converted into numerical embeddings
+- Converted into embeddings using Hugging Face
 
 ---
 
 ## 2. Vector Storage
 
-The embeddings are stored inside ChromaDB.
-
-This allows semantic searching instead of simple keyword matching.
+Embeddings are stored inside **ChromaDB**, allowing semantic search rather than simple keyword matching.
 
 ---
 
-## 3. User Query
+## 3. Question Retrieval
 
 When a user asks a question:
 
 ```
-User Question
-        |
-        v
+Question
+     │
+     ▼
 Embedding Generation
-        |
-        v
+     │
+     ▼
 Similarity Search
-        |
-        v
-Relevant Documents
+     │
+     ▼
+Relevant Chunks
 ```
+
+The three most relevant chunks are retrieved.
 
 ---
 
 ## 4. Answer Generation
 
-The retrieved information is sent to GPT-4.1-mini.
+The retrieved document context is sent to GPT-4.1-mini together with the user's question.
 
-The model generates an answer using only the provided context.
+The model is instructed to answer **only using the retrieved context**.
+
+If the answer is not contained in the documents, the assistant responds:
+
+> "I couldn't find that information in the provided documents."
 
 ---
 
 # Example
 
-Question:
+### Question
 
 ```
-How long does the Dublin transfer process take?
+What is the Dublin Regulation?
 ```
 
-Answer:
+### Answer
 
 ```
-The process of deciding which country will examine your asylum application and transferring you to that country usually takes up to 6 months.
+The Dublin Regulation determines which European country is responsible for examining an asylum application.
 
 Sources:
-Page 9
-Page 11
+Page 3
+Page 5
 ```
+
+---
+
+# Skills Demonstrated
+
+This project demonstrates experience with:
+
+- Retrieval-Augmented Generation (RAG)
+- Large Language Models (OpenAI GPT)
+- Semantic Search
+- Vector Databases
+- LangChain
+- Hugging Face Embeddings
+- Streamlit
+- Docker
+- Docker Compose
+- Environment Variable Management
+- Git & GitHub
 
 ---
 
 # Future Improvements
 
-Possible future improvements:
+Possible future enhancements include:
 
 - 🌍 Multilingual support
 - 💬 Conversation memory
-- 📄 Multiple document support
-- 🔍 Highlight relevant document passages
-- ☁️ Cloud deployment
-- 🐳 Improved Docker deployment
+- 📄 Support for multiple legal documents
+- 🔎 Highlight retrieved document passages
+- ☁️ Cloud deployment (Azure / AWS / GCP)
 - 🔐 User authentication
+- 📊 Admin dashboard
+- 📝 Chat history export
 
 ---
 
 # Disclaimer
 
-This application provides information from uploaded documents and is not legal advice.
+This application is intended for informational purposes only.
 
-Users should contact official authorities or qualified legal professionals for advice about their individual situation.
+It provides answers based solely on the uploaded documents and **does not constitute legal advice**.
+
+Users should consult qualified legal professionals or the appropriate government authorities regarding their individual circumstances.
+
+---
+
+# License
+
+This project is licensed under the **MIT License**.
 
 ---
 
 # Author
 
-Created by Yohana
+**Yohana**
 
+AI & Machine Learning Developer
+
+GitHub: https://github.com/YohanaTeweldemedhin
