@@ -340,15 +340,6 @@ Possible future enhancements include:
 
 ---
 
-# Disclaimer
-
-This application is intended for informational purposes only.
-
-It provides answers based solely on the uploaded documents and **does not constitute legal advice**.
-
-Users should consult qualified legal professionals or the appropriate government authorities regarding their individual circumstances.
-
----
 
 # License
 
